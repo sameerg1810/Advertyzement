@@ -1,0 +1,59 @@
+import React, { useState, useEffect } from 'react';
+
+function UserCard({ user }) {
+  return (
+    <div className="col-lg-4 col-md-6 mb-4">
+      <div className="card">
+        <img src={user.avatar} className="card-img-top" alt="User Avatar" />
+        <div className="card-body">
+          <h5 className="card-title">{user.first_name} {user.last_name}</h5>
+          <p className="card-text">Email: {user.email}</p>
+          <p className="card-text">ID: {user.id}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UserList() {
+  const [users, setUsers] = useState([]);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    fetch('https://reqres.in/api/users?page=1')
+      .then(response => response.json())
+      .then(data => setUsers(data.data))
+      .catch(error => console.error(error));
+  }, []);
+
+  return (
+    <div className="container" style={{ display: visible ? 'block' : 'none' }}>
+      <h1>Users</h1>
+      <div className="row">
+        {users.map(user => <UserCard key={user.id} user={user} />)}
+      </div>
+    </div>
+  );
+}
+
+function Navbar() {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <button
+        className="navbar-toggler"
+        type="button"
+        onClick={() => setVisible(!visible)}
+      >
+        Users
+      </button>
+      <div className="collapse navbar-collapse">
+        <UserList visible={visible} />
+      </div>
+    </nav>
+  );
+}
+
+export default Navbar;
+
